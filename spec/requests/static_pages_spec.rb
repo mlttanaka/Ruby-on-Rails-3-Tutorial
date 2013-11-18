@@ -18,4 +18,12 @@ describe "StaticPages" do
     end
   end
 
+  describe "Help page" do
+
+    it "should have the content 'About'" do
+      visit '/static_pages/about' # visit and page are capybara functions
+      page.should have_content('About')
+    end
+  end
+
 end
