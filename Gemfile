@@ -4,11 +4,6 @@ gem 'rails', '3.2.14'
 gem 'bootstrap-sass', '2.1'
 gem 'pg', '0.12.2'
 
-group :development do
-  gem 'rspec-rails', '2.11.0'
-  gem 'guard-rspec', '1.2.1'
-end
-
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
@@ -19,14 +14,20 @@ end
 
 gem 'jquery-rails', '2.0.2'
 
+group :development, :test do
+  gem 'rspec-rails', '2.11.0'
+  gem 'guard-rspec', '1.2.1'
+  gem 'guard-spork', '1.2.0'
+  gem 'childprocess', '0.3.6'
+  gem 'spork', '0.9.2'
+end
+
+group :development do
+  gem 'annotate', '2.5.0'
+end
+
 group :test do
   gem 'capybara', '1.1.2'
   gem 'rb-fsevent', '0.9.1', :require => false
   gem 'growl', '1.0.3'
-end
-
-group :development, :test do
-  gem 'guard-spork', '1.2.0'
-  gem 'childprocess', '0.3.6'
-  gem 'spork', '0.9.2'
 end
