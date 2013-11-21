@@ -68,7 +68,10 @@ describe "UserPages" do
 
   describe "edit" do
     let(:user) { FactoryGirl.create(:user) }
-    before { visit edit_user_path(user) }
+    before do
+      sign_in user
+      visit edit_user_path(user)
+    end
 
     describe "page" do
       it { should have_selector('h1',    text: "Update your profile") }
@@ -80,14 +83,6 @@ describe "UserPages" do
       before { click_button "Save changes" }
 
       it { should have_content('error') }
-    end
-  end
-
-  describe "edit" do
-    let(:user) { FactoryGirl.create(:user) }
-    before do
-      sign_in user
-      visit edit_user_path(user)
     end
 
     describe "with valid information" do
