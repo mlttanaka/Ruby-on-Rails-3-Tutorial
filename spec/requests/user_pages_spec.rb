@@ -13,22 +13,51 @@ describe "UserPages" do
       visit users_path
     end
 
+
     it { should have_selector('title', text: 'All users') }
     it { should have_selector('h1',    text: 'All users') }
+
 
     describe "pagination" do
 
       before(:all) { 30.times { FactoryGirl.create(:user) } }
       after(:all)  { User.delete_all }
 
-      it { should have_selector('div.pagination') }
+      let(:first_page)  { User.paginate(page: 1) }
+      let(:second_page) { User.paginate(page: 2) }
+
+      it { should have_link('Next') }
+      its(:html) { should match('>2</a>') }
 
       it "should list each user" do
-        User.paginate(page: 1).each do |user|
+        User.all[0..2].each do |user|
           page.should have_selector('li', text: user.name)
         end
       end
+
+      it "should list the first page of users" do
+        first_page.each do |user|
+          page.should have_selector('li', text: user.name)
+        end
+      end
+
+      it "should not list the second page of users" do
+        second_page.each do |user|
+          page.should_not have_selector('li', text: user.name)
+        end
+      end
+
+      describe "showing the second page" do
+        before { visit users_path(page: 2) }
+
+        it "should list the second page of users" do
+          second_page.each do |user|
+            page.should have_selector('li', text: user.name)
+          end
+        end
+      end
     end
+
 
     describe "delete links" do
 
@@ -50,12 +79,14 @@ describe "UserPages" do
     end
   end
 
+
   describe "signup page" do
     before { visit signup_path }
 
     it { should have_selector 'h1',    text: 'Sign up' }
     it { should have_selector 'title', text: full_title('Sign up') }
   end
+
 
   describe "profile page" do
     let(:user) { FactoryGirl.create(:user) }
@@ -75,6 +106,7 @@ describe "UserPages" do
   end
 
   describe "signup" do
+
     before { visit signup_path }
 
     let(:submit) { "Create my account" }
@@ -84,19 +116,25 @@ describe "UserPages" do
         expect { click_button submit }.not_to change(User, :count)
       end
 
-      describe "after submission" do
+      describe "error messages" do
         before { click_button submit }
 
         it { should have_selector('title', text: 'Sign up') }
         it { should have_content('error') }
-        it { should have_content("Name can't be blank") }
-        it { should have_content("Email can't be blank") }
-        it { should have_content("Email is invalid") }
-        it { should have_content("Password can't be blank") }
-        it { should have_content("Password confirmation can't be blank") }
       end
-
     end
+
+      # describe "after submission" do
+      #   before { click_button submit }
+
+      #   it { should have_selector('title', text: 'Sign up') }
+      #   it { should have_content('error') }
+      #   it { should have_content("Name can't be blank") }
+      #   it { should have_content("Email can't be blank") }
+      #   it { should have_content("Email is invalid") }
+      #   it { should have_content("Password can't be blank") }
+      #   it { should have_content("Password confirmation can't be blank") }
+      # end
 
     describe "with valid information" do
       before do
