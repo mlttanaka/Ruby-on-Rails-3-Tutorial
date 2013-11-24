@@ -26,6 +26,11 @@ class User < ActiveRecord::Base
 
   after_validation { self.errors.messages.delete(:password_digest) }
 
+  def feed
+    # This is preliminary...
+    Micropost.where("user_id = ?", id)
+  end
+
 
   private
 
